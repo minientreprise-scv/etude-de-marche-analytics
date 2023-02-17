@@ -15,6 +15,8 @@ Il est utilisé pour analyser les résultats de [l'étude de marché Planteqr](h
 
 Le fichier csv n'est pas publiquement visible, car il contient des données sensibles... Il faut donc aller le chercher sur le Nextcloud.
 
+> Les graphiques ne contenant pas de données sensibles seront publiés
+
 ### Lancer le programme
 
 1. Dépendances
