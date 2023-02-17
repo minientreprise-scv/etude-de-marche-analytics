@@ -98,7 +98,7 @@ def get_emails_names(rows):
     return emails_names_list
 
 
-def generate_pie_graph(datas, labels, name):
+def generate_pie_graph(datas, labels, name, title):
     explode = [0 for _ in datas]
     explode[datas.index(max(datas))] = 0.2
     plot.figure(figsize=(16, 9))
@@ -109,6 +109,7 @@ def generate_pie_graph(datas, labels, name):
              explode=explode,
              shadow=True)
     plot.legend()
+    plot.title(title)
     plot.savefig(f'graphs/{name}.png')
 
 
@@ -146,7 +147,7 @@ if __name__ == '__main__':
         print(f"Email / noms récupérés: {emails_names_string}")
 
         if graphs:
-            generate_pie_graph([prices_by_percent[key] for key in prices_by_percent.keys()], prices_by_percent.keys(), 'prix-de-vente')
-            generate_pie_graph([places_by_percent[key] for key in places_by_percent.keys()], places_by_percent.keys(), 'lieux-de-vente')
-            generate_pie_graph([wanted_plants_by_percent[key] for key in wanted_plants_by_percent.keys()], wanted_plants_by_percent.keys(), 'types-de-plante')
-            generate_pie_graph([percentage_of_persons_who_know_qr[key] for key in percentage_of_persons_who_know_qr.keys()], percentage_of_persons_who_know_qr.keys(), 'connaissent-qr')
+            generate_pie_graph([prices_by_percent[key] for key in prices_by_percent.keys()], prices_by_percent.keys(), 'prix-de-vente', 'Taux de réponses à "tranche de prix"')
+            generate_pie_graph([places_by_percent[key] for key in places_by_percent.keys()], places_by_percent.keys(), 'lieux-de-vente', 'Taux de réponses à "lieu d\'achat"')
+            generate_pie_graph([wanted_plants_by_percent[key] for key in wanted_plants_by_percent.keys()], wanted_plants_by_percent.keys(), 'types-de-plante', 'Taux de réponses à "plante recherchée"')
+            generate_pie_graph([percentage_of_persons_who_know_qr[key] for key in percentage_of_persons_who_know_qr.keys()], percentage_of_persons_who_know_qr.keys(), 'connaissent-qr', 'Taux de personnes qui savent utiliser un QR code')
