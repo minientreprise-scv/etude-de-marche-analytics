@@ -17,9 +17,13 @@ date_index = 12
 
 def get_average_age(rows):
     ages = []
+    total = len(ages)
     for row in rows:
+        if row[age_index] == '':
+            total -= 1
+            continue
         ages.append(int(row[age_index]))
-    return sum(ages) / len(ages)
+    return sum(ages) / total
 
 
 def get_prices_by_percent(rows):
@@ -28,6 +32,9 @@ def get_prices_by_percent(rows):
     prices_by_number = {}
     prices_by_percent = {}
     for price in prices:
+        if price == '':
+            total -= 1
+            continue
         if prices_by_number.get(price) is None:
             prices_by_number[price] = 1
             continue
@@ -43,6 +50,9 @@ def get_places_by_percent(rows):
     places_by_number = {}
     places_by_percent = {}
     for place in places:
+        if place == '':
+            total -= 1
+            continue
         if places_by_number.get(place) is None:
             places_by_number[place] = 1
             continue
@@ -58,6 +68,9 @@ def get_wanted_plants_by_percent(rows):
     plants_by_number = {}
     plants_by_percent = {}
     for plant in plants:
+        if plant == '':
+            total -= 1
+            continue
         if plants_by_number.get(plant) is None:
             plants_by_number[plant] = 1
             continue
