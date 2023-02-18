@@ -163,7 +163,6 @@ if __name__ == '__main__':
         median_age_interested = get_median_age_interested(rows)
 
         data_period = ' au '.join(get_farthest_and_closest_dates(rows))
-        print(data_period)
 
         prices_by_percent = get_prices_by_percent(rows)
         prices_by_percent_string = ''.join([f'\n\t- {price}: {value}%' for price, value in prices_by_percent.items()])
