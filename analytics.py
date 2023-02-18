@@ -17,12 +17,12 @@ date_index = 12
 
 def get_average_age(rows):
     ages = []
-    total = len(ages)
+    total = 0
     for row in rows:
         if row[age_index] == '':
-            total -= 1
             continue
         ages.append(int(row[age_index]))
+        total += 1
     return sum(ages) / total
 
 
