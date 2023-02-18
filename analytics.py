@@ -1,4 +1,5 @@
 import csv
+import datetime
 import os.path
 
 import matplotlib.pyplot as plot
@@ -113,6 +114,18 @@ def get_emails_names(rows):
     return emails_names_list
 
 
+def get_farthest_and_closest_dates(rows):
+    dates = []
+    for row in rows:
+        if row[date_index] != '':
+            date, hour = row[date_index].split(' ')
+            year, month, day = date.split('-')
+            hour, minutes = hour.split(':')
+            dates.append(datetime.datetime(int(year), int(month), int(day), int(hour), int(minutes)).timestamp())
+    dates.sort()
+    return datetime.datetime.fromtimestamp(dates[0]).strftime('%m-%d-%y %H:%M'), datetime.datetime.fromtimestamp(dates[-1]).strftime('%m-%d-%y %H:%M')
+
+
 def generate_pie_graph(datas, labels, name, title):
     explode = [0 for _ in datas]
     explode[datas.index(max(datas))] = 0.2
@@ -128,18 +141,29 @@ def generate_pie_graph(datas, labels, name, title):
     plot.savefig(f'graphs/{name}.png')
 
 
+def generate_summary(title, content, footer):
+    try:
+        open('graphs/Synthese.md', 'w').write(f'# {title}\n\n{content}\n\n_{footer}_')
+    except:
+        open('graphs/Synthese.md', 'x')
+        generate_summary(title, content, footer)
+
+
 if __name__ == '__main__':
     with open('tableau-resultats-etude-de-marche.csv') as file:
         rows = list(csv.reader(file))[1:-1]
         if not os.path.isdir('graphs'):
             os.mkdir('graphs')
         print('Planteqr - Étude de marché analytiques:')
-        graphs = True if input('Générer des graphiques ?[y/n]') == 'y' else 'n'
+        graphs = True if input('Générer des graphiques et une synthèse ?[y/n]') == 'y' else 'n'
         print(f"{len(rows)} entrées:")
 
         average_age = get_average_age(rows)
         average_age_interested = get_average_age_interested(rows)
         median_age_interested = get_median_age_interested(rows)
+
+        data_period = ' au '.join(get_farthest_and_closest_dates(rows))
+        print(data_period)
 
         prices_by_percent = get_prices_by_percent(rows)
         prices_by_percent_string = ''.join([f'\n\t- {price}: {value}%' for price, value in prices_by_percent.items()])
@@ -170,3 +194,20 @@ if __name__ == '__main__':
             generate_pie_graph([places_by_percent[key] for key in places_by_percent.keys()], places_by_percent.keys(), 'lieux-de-vente', 'Taux de réponses à "lieu d\'achat"')
             generate_pie_graph([wanted_plants_by_percent[key] for key in wanted_plants_by_percent.keys()], wanted_plants_by_percent.keys(), 'types-de-plante', 'Taux de réponses à "plante recherchée"')
             generate_pie_graph([percentage_of_persons_who_know_qr[key] for key in percentage_of_persons_who_know_qr.keys()], percentage_of_persons_who_know_qr.keys(), 'connaissent-qr', 'Taux de personnes qui savent utiliser un QR code')
+
+            date = datetime.datetime.now().date()
+        summary = f"""
+**Sur {len(rows)} réponses:**
+
+La moyenne d'âge est de {average_age} ans.
+
+La moyenne d'âge intéressée est de {average_age_interested} ans.
+
+La médiane d'âge intéressée est de {median_age_interested} ans.
+
+![Graphique du prix voulus](prix-de-vente.png)
+![Graphique du lieu de vente voulus](lieux-de-vente.png)
+![Graphique des types de plantes voulues](types-de-plante.png)
+![Graphique du % de personnes qui connaissent les qr codes.](connaissent-qr.png)
+        """
+        generate_summary(f'Résultats générés le {date}', summary, f'Données récoltées du {data_period}')
