@@ -17,13 +17,28 @@ date_index = 12
 
 def get_average_age(rows):
     ages = []
-    total = 0
     for row in rows:
         if row[age_index] == '':
             continue
         ages.append(int(row[age_index]))
-        total += 1
-    return sum(ages) / total
+    return sum(ages) / len(ages)
+
+
+def get_average_age_interested(rows):
+    ages = []
+    for row in rows:
+        if row[age_index] != '' and row[interested_index] == 'Oui':
+            ages.append(int(row[age_index]))
+    return sum(ages) / len(ages)
+
+
+def get_median_age_interested(rows):
+    ages = []
+    for row in rows:
+        if row[age_index] != '' and row[interested_index] == 'Oui':
+            ages.append(int(row[age_index]))
+    ages.sort()
+    return ages[int(len(ages) / 2)]
 
 
 def get_prices_by_percent(rows):
@@ -123,6 +138,8 @@ if __name__ == '__main__':
         print(f"{len(rows)} entrées:")
 
         average_age = get_average_age(rows)
+        average_age_interested = get_average_age_interested(rows)
+        median_age_interested = get_median_age_interested(rows)
 
         prices_by_percent = get_prices_by_percent(rows)
         prices_by_percent_string = ''.join([f'\n\t- {price}: {value}%' for price, value in prices_by_percent.items()])
@@ -140,6 +157,8 @@ if __name__ == '__main__':
         emails_names_string = ''.join([f'\n\t - ' + email + ' : ' + nom for email, nom in emails_names])
 
         print(f"Moyenne d'âge: {average_age} ans")
+        print(f"Moyenne d'âge intéressée: {average_age_interested} ans")
+        print(f"Médiane d'âge intéressée: {median_age_interested} ans")
         print(f"Taux/prix voulu: {prices_by_percent_string}")
         print(f"Taux/lieu de vente voulu: {places_by_percent_string}")
         print(f"Taux/type de plante voulu: {wanted_plants_by_percent_string}")
