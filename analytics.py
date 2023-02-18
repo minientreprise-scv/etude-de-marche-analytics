@@ -129,7 +129,7 @@ def get_farthest_and_closest_dates(rows):
 def generate_pie_graph(datas, labels, name, title):
     explode = [0 for _ in datas]
     explode[datas.index(max(datas))] = 0.2
-    plot.figure(figsize=(16, 9))
+    plot.figure(figsize=(8, 5))
     plot.pie(datas, labels=labels,
              autopct=lambda x: str(round(x, 2)) + '%',
              pctdistance=0.7,
