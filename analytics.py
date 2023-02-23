@@ -114,6 +114,15 @@ def get_emails_names(rows):
     return emails_names_list
 
 
+def get_age_interested(rows):
+    age_interested = []
+    for row in rows:
+        if row[age_index] != '' and row[interested_index] != '':
+            age_interested.append((row[age_index], row[interested_index]))
+    age_interested.sort()
+    return age_interested
+
+
 def get_farthest_and_closest_dates(rows):
     dates = []
     for row in rows:
@@ -141,6 +150,27 @@ def generate_pie_graph(datas, labels, name, title):
     plot.savefig(f'graphs/{name}.png')
 
 
+def generate_point_graph(datas, name, title, lines):
+    plot.figure(figsize=(8, 5))
+    fig, ax = plot.subplots(1, 1, figsize=(5, 7))
+    plot.grid()
+    fig.axes[0].set_yticks([i * 5 for i in range(1, 20)])
+    for line in lines:
+        ax.plot(['Oui', 'Non'], [line[0], line[0]], label=line[1], c=line[2])
+        ax.legend()
+    for data in datas:
+        value = int(data[0])
+        if data[1] == 'Oui':
+            ax.plot(['Oui', 'Oui'], [value, value], 'o', c='g', label='Oui')
+            continue
+        ax.plot(['Non', 'Non'], [value, value], 'o', c='r', label='Non')
+
+    ax.set(title=title)
+    ax.set_ylabel('Âge en années')
+    ax.set_xlabel('Est intéressé [Oui/Non]')
+    fig.savefig(f'graphs/{name}.png')
+
+
 def generate_summary(title, content, footer):
     try:
         open('graphs/Synthese.md', 'w').write(f'# {title}\n\n{content}\n\n_{footer}_')
@@ -157,6 +187,7 @@ if __name__ == '__main__':
         print('Planteqr - Étude de marché analytiques:')
         graphs = True if input('Générer des graphiques et une synthèse ?[y/n]') == 'y' else 'n'
         print(f"{len(rows)} entrées:")
+
 
         average_age = get_average_age(rows)
         average_age_interested = get_average_age_interested(rows)
@@ -193,6 +224,8 @@ if __name__ == '__main__':
             generate_pie_graph([places_by_percent[key] for key in places_by_percent.keys()], places_by_percent.keys(), 'lieux-de-vente', 'Taux de réponses à "lieu d\'achat"')
             generate_pie_graph([wanted_plants_by_percent[key] for key in wanted_plants_by_percent.keys()], wanted_plants_by_percent.keys(), 'types-de-plante', 'Taux de réponses à "plante recherchée"')
             generate_pie_graph([percentage_of_persons_who_know_qr[key] for key in percentage_of_persons_who_know_qr.keys()], percentage_of_persons_who_know_qr.keys(), 'connaissent-qr', 'Taux de personnes qui savent utiliser un QR code')
+            generate_point_graph(get_age_interested(rows), 'analyses-ages', 'Analyses sur les âges.', [(average_age_interested, 'Moyenne intéressée', 'royalblue'), (median_age_interested, 'Médiane intéressée', 'orange'), (average_age, 'Moyenne d\'âge interrogée', 'lime')])
+
 
             date = datetime.datetime.now().date()
         summary = f"""
@@ -208,5 +241,6 @@ La médiane d'âge intéressée est de {median_age_interested} ans.
 ![Graphique du lieu de vente voulus](lieux-de-vente.png)
 ![Graphique des types de plantes voulues](types-de-plante.png)
 ![Graphique du % de personnes qui connaissent les qr codes.](connaissent-qr.png)
+![Graphique d'analyses sur les ages.](analyses-ages.png)
         """
         generate_summary(f'Résultats générés le {date}', summary, f'Données récoltées du {data_period}')
