@@ -123,6 +123,24 @@ def get_age_interested(rows):
     return age_interested
 
 
+def get_percentage_age_sliced_interested(rows):
+    slices = [(0, 20), (20, 40), (40, 100)]
+    percentage_of_slices = {f'{slice[0]} - {slice[1]} ans': [] for slice in slices}
+    for part in slices:
+        for row in rows:
+            if row[age_index] != '' and row[interested_index] == 'Oui':
+                if part[0] < int(row[age_index]) < part[1]:
+                    percentage_of_slices[f'{part[0]} - {part[1]} ans'].append(int(row[age_index]))
+    print(percentage_of_slices)
+    for slice in percentage_of_slices.keys():
+        if len(percentage_of_slices[slice]) == 0:
+            percentage_of_slices[slice] = 0
+        else:
+            percentage_of_slices[slice] = sum(percentage_of_slices[slice]) / len(percentage_of_slices[slice])
+    print(percentage_of_slices)
+    return percentage_of_slices
+
+
 def get_farthest_and_closest_dates(rows):
     dates = []
     for row in rows:
@@ -207,6 +225,9 @@ if __name__ == '__main__':
         percentage_of_persons_who_know_qr = get_percentage_of_persons_who_know_qr(rows)
         percentage_of_persons_who_know_qr_string = f"Oui: {percentage_of_persons_who_know_qr['Oui']}%, Non: {percentage_of_persons_who_know_qr['Non']}%"
 
+        percentage_age_sliced_interested = get_percentage_age_sliced_interested(rows)
+        percentage_age_sliced_interested_string = ''.join([f'\n\t- {slice}: {value}%' for slice, value in percentage_age_sliced_interested.items()])
+
         emails_names = get_emails_names(rows)
         emails_names_string = ''.join([f'\n\t - ' + email + ' : ' + nom for email, nom in emails_names])
 
@@ -217,6 +238,7 @@ if __name__ == '__main__':
         print(f"Taux/lieu de vente voulu: {places_by_percent_string}")
         print(f"Taux/type de plante voulu: {wanted_plants_by_percent_string}")
         print(f"Connaissent le QR code: {percentage_of_persons_who_know_qr_string}")
+        print(f"Tranches d'âge intéressées: {percentage_age_sliced_interested_string}")
         print(f"Email / noms récupérés: {emails_names_string}")
 
         if graphs:
@@ -224,6 +246,7 @@ if __name__ == '__main__':
             generate_pie_graph([places_by_percent[key] for key in places_by_percent.keys()], places_by_percent.keys(), 'lieux-de-vente', 'Taux de réponses à "lieu d\'achat"')
             generate_pie_graph([wanted_plants_by_percent[key] for key in wanted_plants_by_percent.keys()], wanted_plants_by_percent.keys(), 'types-de-plante', 'Taux de réponses à "plante recherchée"')
             generate_pie_graph([percentage_of_persons_who_know_qr[key] for key in percentage_of_persons_who_know_qr.keys()], percentage_of_persons_who_know_qr.keys(), 'connaissent-qr', 'Taux de personnes qui savent utiliser un QR code')
+            generate_pie_graph([percentage_age_sliced_interested[key] for key in percentage_age_sliced_interested.keys()], percentage_age_sliced_interested.keys(), 'tranches-interessees', 'Tranches d\'âge intéressées')
             generate_point_graph(get_age_interested(rows), 'analyses-ages', 'Analyses sur les âges.', [(average_age_interested, 'Moyenne intéressée', 'royalblue'), (median_age_interested, 'Médiane intéressée', 'orange'), (average_age, 'Moyenne d\'âge interrogée', 'lime')])
 
 
@@ -241,6 +264,7 @@ La médiane d'âge intéressée est de {median_age_interested} ans.
 ![Graphique du lieu de vente voulus](lieux-de-vente.png)
 ![Graphique des types de plantes voulues](types-de-plante.png)
 ![Graphique du % de personnes qui connaissent les qr codes.](connaissent-qr.png)
-![Graphique d'analyses sur les ages.](analyses-ages.png)
+![Graphique du % de personnes intéressées par tranches d'âge.](connaissent-qr.png)
+![Graphique d'analyses sur les ages.](tranches-interessees.png)
         """
         generate_summary(f'Résultats générés le {date}', summary, f'Données récoltées du {data_period}')
