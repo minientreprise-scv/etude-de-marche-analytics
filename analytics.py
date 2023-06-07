@@ -4,16 +4,16 @@ import os.path
 
 import matplotlib.pyplot as plot
 
-age_index = 0
-interested_index = 1
-known_qr_index = 3
-has_smartphone_index = 4
-where_to_buy_index = 5
-price_index = 6
-plants_wanted_index = 7
-email_index = 10
-name_index = 11
-date_index = 12
+age_index = 3
+interested_index = 4
+known_qr_index = 6
+has_smartphone_index = 7
+where_to_buy_index = 8
+price_index = 9
+plants_wanted_index = 10
+email_index = 11
+name_index = 12
+date_index = 13
 
 
 def get_average_age(rows):
@@ -264,7 +264,7 @@ La médiane d'âge intéressée est de {median_age_interested} ans.
 ![Graphique du lieu de vente voulus](lieux-de-vente.png)
 ![Graphique des types de plantes voulues](types-de-plante.png)
 ![Graphique du % de personnes qui connaissent les qr codes.](connaissent-qr.png)
-![Graphique du % de personnes intéressées par tranches d'âge.](connaissent-qr.png)
-![Graphique d'analyses sur les ages.](tranches-interessees.png)
+![Graphique du % de personnes intéressées par tranches d'âge.](tranches-interessees.png)
+![Graphique d'analyses sur les ages.](analyses-ages.png)
         """
         generate_summary(f'Résultats générés le {date}', summary, f'Données récoltées du {data_period}')
