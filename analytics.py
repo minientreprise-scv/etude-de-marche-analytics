@@ -131,13 +131,11 @@ def get_percentage_age_sliced_interested(rows):
             if row[age_index] != '' and row[interested_index] == 'Oui':
                 if part[0] < int(row[age_index]) < part[1]:
                     percentage_of_slices[f'{part[0]} - {part[1]} ans'].append(int(row[age_index]))
-    print(percentage_of_slices)
     for slice in percentage_of_slices.keys():
         if len(percentage_of_slices[slice]) == 0:
             percentage_of_slices[slice] = 0
         else:
             percentage_of_slices[slice] = sum(percentage_of_slices[slice]) / len(percentage_of_slices[slice])
-    print(percentage_of_slices)
     return percentage_of_slices
 
 
